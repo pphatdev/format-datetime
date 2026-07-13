@@ -32,7 +32,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pphatdev/format-datetime"
+    "url": "git+https://github.com/pphatdev/format-datetime.git"
   },
   "bugs": {
     "url": "https://github.com/pphatdev/format-datetime/issues"
