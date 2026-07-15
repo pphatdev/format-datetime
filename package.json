@@ -20,7 +20,9 @@
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm,iife --global-name FormatDateTimeBundle --dts --clean --minify",
-    "test": "vitest run"
+    "test:node": "vitest run test/node",
+    "test:deno": "deno test -A test/deno",
+    "test": "npm run test:node && npm run test:deno"
   },
   "keywords": [
     "datetime",
@@ -41,6 +43,7 @@
     "url": "https://github.com/pphatdev/format-datetime/issues"
   },
   "devDependencies": {
+    "@types/node": "^20.0.0",
     "tsup": "^8.0.0",
     "typescript": "^5.9.3",
     "vitest": "^4.1.10"

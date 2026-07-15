@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { FormatDateTime } from '../src/index.ts';
+import { FormatDateTime } from '../../src/index.ts';
+import process from 'node:process';
 
 describe('FormatDateTime', () => {
     it('should handle basic token replacement for year and month', () => {
@@ -54,5 +55,10 @@ describe('FormatDateTime', () => {
         const date = new Date(2026, 0, 1); // Jan 1, 2026
         const dt = new FormatDateTime(date, 'YYYY');
         expect(String(dt)).toBe('2026');
+    });
+
+    it('should be running in Node runtime', () => {
+        expect(typeof process).not.toBe('undefined');
+        expect(process.versions.node).toBeDefined();
     });
 });
