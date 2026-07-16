@@ -2,6 +2,10 @@ import { KhmerDate } from '../lunar/khmer-date.ts';
 import { Calculator } from '../lunar/calculator.ts';
 import { Constants } from './constants.ts';
 
+/**
+ * A dictionary of regular expression patterns for date and time formatting tokens.
+ * Maps formatting tokens (e.g. "YYYY", "MM", "dd") to their corresponding regex groups.
+ */
 export const PATTERNS: Record<string, string> = {
     "d": "(?<d>\\d)",
     "dd": "(?<dd>\\d{2})",
@@ -45,6 +49,15 @@ export const PATTERNS: Record<string, string> = {
     "lw": "(?<lw>[\\u1780-\\u17FF])",
 };
 
+/**
+ * Evaluates date tokens based on the given date, format string, and locale.
+ * Returns an object containing the formatted string value for each matching token.
+ * 
+ * @param {Date} date - The date to extract values from.
+ * @param {string} format - The format string containing tokens to evaluate.
+ * @param {string} locale - The BCP 47 locale tag for localization.
+ * @returns {Record<string, string>} An object mapping tokens to their evaluated localized string values.
+ */
 export function generateTokens(date: Date, format: string, locale: string): Record<string, string> {
     const y = date.getFullYear();
     const m = date.getMonth();
