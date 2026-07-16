@@ -40,12 +40,21 @@ export const metadata: Metadata = {
         title: "KH DateTime Formatter | Modern Localization Utility",
         description: "A robust, lightweight TypeScript utility to format dates and times into localized strings, featuring built-in Khmer Lunar support.",
         siteName: "KH DateTime Formatter",
+        images: [
+            {
+                url: "https://format-datetime.pphat.me/cover.png",
+                width: 1200,
+                height: 630,
+                alt: "KH DateTime Formatter Cover",
+            }
+        ]
     },
     twitter: {
         card: "summary_large_image",
         title: "KH DateTime Formatter | Modern Localization Utility",
         description: "A robust, lightweight TypeScript utility to format dates and times into localized strings, featuring built-in Khmer Lunar support.",
         creator: "@pphatdev",
+        images: ["https://format-datetime.pphat.me/cover.png"]
     },
     robots: {
         index: true,
