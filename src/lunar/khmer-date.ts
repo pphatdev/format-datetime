@@ -10,6 +10,11 @@ export class KhmerDate {
     protected dateTime: Date;
     protected static khNewYearCache: Record<number, Date> = {};
 
+    /**
+     * Initializes a new KhmerDate instance.
+     * 
+     * @param {string | Date | number | null} [date=null] - The initial date.
+     */
     constructor(date: string | Date | number | null = null) {
         if (date === null) {
             this.dateTime = new Date();
@@ -24,14 +29,23 @@ export class KhmerDate {
         }
     }
 
+    /**
+     * Creates a new KhmerDate instance.
+     */
     public static create(date: string | Date | number | null = null): KhmerDate {
         return new KhmerDate(date);
     }
 
+    /**
+     * Creates a new KhmerDate instance from an existing Date object.
+     */
     public static createFromDate(dateTime: Date): KhmerDate {
         return new KhmerDate(dateTime);
     }
 
+    /**
+     * Retrieves the underlying Date object.
+     */
     public getDateTime(): Date {
         return new Date(this.dateTime.getTime());
     }
@@ -92,6 +106,13 @@ export class KhmerDate {
         };
     }
 
+    /**
+     * Retrieves the exact moment of the Khmer New Year for a given Gregorian year.
+     * Returns a cached value if previously calculated.
+     * 
+     * @param {number} gregorianYear - The Gregorian year.
+     * @returns {Date} The exact Date object representing the New Year moment.
+     */
     public static getKhNewYearMoment(gregorianYear: number): Date {
         if (this.khNewYearCache[gregorianYear]) {
             return new Date(this.khNewYearCache[gregorianYear].getTime());
@@ -116,6 +137,12 @@ export class KhmerDate {
         return result;
     }
 
+    /**
+     * Formats the current date into a Khmer lunar date string.
+     * 
+     * @param {string | null} [format=null] - The format preset or pattern.
+     * @returns {string} The formatted lunar date.
+     */
     public toLunarDate(format: string | null = null): string {
         const lunarDate = KhmerDate.findLunarDate(this.dateTime);
 
@@ -126,18 +153,33 @@ export class KhmerDate {
         }, format);
     }
 
+    /**
+     * Returns the lunar day number.
+     */
     public khDay(): number {
         return KhmerDate.findLunarDate(this.dateTime).day;
     }
 
+    /**
+     * Returns the lunar month index.
+     */
     public khMonth(): number {
         return KhmerDate.findLunarDate(this.dateTime).month;
     }
 
+    /**
+     * Returns the Buddhist Era year.
+     */
     public khYear(): number {
         return Calculator.getBEYear(this.dateTime);
     }
 
+    /**
+     * Formats the date using standard solar Khmer date formatting.
+     * 
+     * @param {string | null} [format=null] - The format pattern.
+     * @returns {string} The formatted string.
+     */
     public toKhmerDate(format: string | null = null): string {
         const dateTime = this.dateTime;
         const formatter = new KhmerFormatter();
@@ -185,28 +227,46 @@ export class KhmerDate {
         return this.toLunarDate();
     }
 
+    /**
+     * Returns an array of lunar month names.
+     */
     public static getKhmerMonthNames(): string[] {
         return Object.keys(Constants.LUNAR_MONTHS);
     }
 
+    /**
+     * Returns an array of animal years.
+     */
     public static getAnimalYearNames(): string[] {
         return Constants.ANIMAL_YEARS;
     }
 
+    /**
+     * Returns an array of era years (Sak).
+     */
     public static getEraYearNames(): string[] {
         return Constants.ERA_YEARS;
     }
 
+    /**
+     * Converts a Khmer number string back to an Arabic number string.
+     */
     public static khmerToArabicNumber(khmerNumber: string): string {
         const formatter = new KhmerFormatter();
         return formatter.fromKhmerNumber(khmerNumber);
     }
 
+    /**
+     * Converts an Arabic number string to a Khmer number string.
+     */
     public static arabicToKhmerNumber(arabicNumber: string): string {
         const formatter = new KhmerFormatter();
         return formatter.toKhmerNumber(arabicNumber);
     }
 
+    /**
+     * Retrieves the Khmer number representation of an integer.
+     */
     public static getKhmerNumber(number: number): string {
         return this.arabicToKhmerNumber(number.toString());
     }
