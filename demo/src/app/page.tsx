@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { FormatDateTime, KhmerDate } from '@pphatdev/format-datetime';
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Clock, Globe, Sparkles, Code2, ArrowRight, Copy, Check, BookOpen } from "lucide-react";
+import pkg from '../../package.json';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -140,8 +141,8 @@ export default function Home() {
 
                 {/* Main Ambient Lights */}
                 <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] opacity-20 dark:opacity-30 blur-[120px] bg-linear-to-r from-sky-500 via-teal-500 to-green-500 rounded-full mix-blend-multiply dark:mix-blend-screen" />
-                <div className="absolute top-[30%] -left-[10%] w-[600px] h-[600px] opacity-10 dark:opacity-20 blur-[150px] bg-teal-500 rounded-full mix-blend-multiply dark:mix-blend-screen" />
-                <div className="absolute top-[60%] -right-[10%] w-[600px] h-[600px] opacity-10 dark:opacity-20 blur-[150px] bg-sky-500 rounded-full mix-blend-multiply dark:mix-blend-screen" />
+                <div className="absolute top-[30%] left-[-10%] w-[600px] h-[600px] opacity-10 dark:opacity-20 blur-[150px] bg-teal-500 rounded-full mix-blend-multiply dark:mix-blend-screen" />
+                <div className="absolute top-[60%] right-[-10%] w-[600px] h-[600px] opacity-10 dark:opacity-20 blur-[150px] bg-sky-500 rounded-full mix-blend-multiply dark:mix-blend-screen" />
             </div>
 
             {/* Navigation */}
@@ -149,6 +150,9 @@ export default function Home() {
                 <div className="flex items-center gap-2 font-bold text-lg">
                     <Clock className="w-5 h-5 text-teal-400" />
                     <span className="font-black mb-0.5 max-sm:hidden">KH DateTime</span>
+                    <span className="text-[10px] font-mono bg-teal-500/10 text-teal-600 dark:text-teal-400 px-2 py-0.5 rounded-full mb-0.5 border border-teal-500/20 max-sm:hidden">
+                        v{pkg.version}
+                    </span>
                 </div>
                 <div className="flex items-center gap-4">
                     <ThemeToggle />
@@ -446,7 +450,7 @@ export default function Home() {
                                 <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-sky-500/10 blur-[100px] rounded-full" />
 
                                 {/* Grid Pattern */}
-                                <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_100%)]"></div>
+                                <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_at_center,black_50%,transparent_100%)]"></div>
 
                                 <div className="relative z-10 flex flex-col items-start gap-8 w-full">
                                     <div className="flex items-center gap-3">
@@ -476,7 +480,7 @@ export default function Home() {
             {/* Footer Area */}
             <div className="relative w-full pb-16 pt-16 flex flex-col items-center overflow-hidden mt-12">
                 {/* Clean Top Border Effect */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4/5 max-w-2xl h-[1px] bg-linear-to-r from-transparent via-neutral-300 dark:via-white/20 to-transparent" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4/5 max-w-2xl h-px bg-linear-to-r from-transparent via-neutral-300 dark:via-white/20 to-transparent" />
 
                 {/* Ambient bottom glow effect */}
                 <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-teal-500/10 dark:bg-teal-500/20 blur-[100px] rounded-[100%] pointer-events-none" />
