@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { FormatDateTime, KhmerDate } from '@pphatdev/format-datetime';
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Clock, Globe, Sparkles, Code2, ArrowRight, Copy, Check } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Globe, Sparkles, Code2, ArrowRight, Copy, Check, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -13,6 +13,32 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { ThemeToggle } from "@/components/theme-toggle";
+
+function CodeSnippet({ code, children }: { code: string, children: React.ReactNode }) {
+    const [copied, setCopied] = useState(false);
+    const handleCopy = () => {
+        navigator.clipboard.writeText(code);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    return (
+        <div className="relative group bg-[#0d1117] dark:bg-black rounded-xl border border-neutral-200/10 dark:border-white/10 mt-auto">
+            <button
+                onClick={handleCopy}
+                className="absolute top-2 right-2 p-1.5 rounded-lg bg-neutral-800/80 hover:bg-neutral-700/80 text-neutral-400 hover:text-white opacity-0 group-hover:opacity-100 transition-all backdrop-blur-md border border-white/5 z-10"
+                title="Copy code"
+            >
+                {copied ? <Check className="w-4 h-4 text-teal-400" /> : <Copy className="w-4 h-4" />}
+            </button>
+            <div className="p-4 overflow-x-auto">
+                <pre className="text-sm font-mono text-neutral-300 leading-relaxed pr-8">
+                    {children}
+                </pre>
+            </div>
+        </div>
+    );
+}
 
 export default function Home() {
     const [mounted, setMounted] = useState(false);
@@ -43,6 +69,14 @@ export default function Home() {
     useEffect(() => {
         setMounted(true);
         setNow(new Date());
+
+        if (typeof navigator !== 'undefined' && navigator.language) {
+            const lang = navigator.language.toLowerCase();
+            if (lang.startsWith('en')) setLocale('en-US');
+            else if (lang.startsWith('fr')) setLocale('fr-FR');
+            else if (lang.startsWith('zh')) setLocale('zh-CN');
+            // defaults to 'km-KH'
+        }
 
         const timer = setInterval(() => {
             setNow(new Date());
@@ -103,11 +137,15 @@ export default function Home() {
                     </defs>
                     <rect width="100%" height="100%" strokeWidth="0" fill="url(#grid)" />
                 </svg>
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] opacity-15 dark:opacity-30 blur-[120px] bg-linear-to-r from-sky-500 via-teal-500 to-green-500 rounded-full mix-blend-multiply dark:mix-blend-screen" />
+
+                {/* Main Ambient Lights */}
+                <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] opacity-20 dark:opacity-30 blur-[120px] bg-linear-to-r from-sky-500 via-teal-500 to-green-500 rounded-full mix-blend-multiply dark:mix-blend-screen" />
+                <div className="absolute top-[30%] -left-[10%] w-[600px] h-[600px] opacity-10 dark:opacity-20 blur-[150px] bg-teal-500 rounded-full mix-blend-multiply dark:mix-blend-screen" />
+                <div className="absolute top-[60%] -right-[10%] w-[600px] h-[600px] opacity-10 dark:opacity-20 blur-[150px] bg-sky-500 rounded-full mix-blend-multiply dark:mix-blend-screen" />
             </div>
 
             {/* Navigation */}
-            <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-6xl rounded-full border border-neutral-200 dark:border-white/10 bg-white/50 dark:bg-black/30 backdrop-blur-md px-6 py-3 flex items-center justify-between">
+            <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-6xl rounded-full border border-neutral-200 dark:border-white/10 bg-white/50 dark:bg-black/10 backdrop-blur-md px-6 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-2 font-bold text-lg">
                     <Clock className="w-5 h-5 text-teal-400" />
                     <span className="font-black mb-0.5 max-sm:hidden">KH DateTime</span>
@@ -225,6 +263,64 @@ export default function Home() {
                     </div>
                 </section>
 
+                {/* How to Use / Documentation Section */}
+                <section className="w-full flex flex-col gap-6">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-black/5 dark:bg-white/5 rounded-xl border border-neutral-200 dark:border-white/10">
+                            <BookOpen className="w-5 h-5 text-neutral-600 dark:text-neutral-300" />
+                        </div>
+                        <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">Quick Start Guide</h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* Example 1 */}
+                        <div className="bg-neutral-50/80 dark:bg-neutral-900/40 backdrop-blur-xl border border-neutral-200 dark:border-white/5 rounded-3xl p-6 flex flex-col gap-4 hover:border-teal-500/30 transition-colors">
+                            <h3 className="text-lg font-bold text-neutral-900 dark:text-white">1. Basic Formatting</h3>
+                            <p className="text-sm text-neutral-600 dark:text-neutral-400">Format any standard JavaScript Date object into localized strings using familiar tokens.</p>
+                            <CodeSnippet code={`import { FormatDateTime } from '@pphatdev/format-datetime';\n\nconst date = new Date();\nconst formatted = FormatDateTime.format(date, 'DD MMMM YYYY', 'km');\n// Result: "០១ មករា ២០២៤"`}>
+                                <code className="text-[#ff7b72]">import</code> {'{ '}FormatDateTime{' }'} <code className="text-[#ff7b72]">from</code> <code className="text-[#a5d6ff]">'@pphatdev/format-datetime'</code>;<br /><br />
+                                <code className="text-[#ff7b72]">const</code> date = <code className="text-[#ff7b72]">new</code> <code className="text-[#d2a8ff]">Date</code>();<br />
+                                <code className="text-[#ff7b72]">const</code> formatted = <code className="text-[#79c0ff]">FormatDateTime</code>.<code className="text-[#d2a8ff]">format</code>(date, <code className="text-[#a5d6ff]">'DD MMMM YYYY'</code>, <code className="text-[#a5d6ff]">'km'</code>);<br />
+                                <code className="text-[#8b949e]">// Result: &quot;<span className="font-[family-name:var(--font-kantumruy)]">០១ មករា ២០២៤</span>&quot;</code>
+                            </CodeSnippet>
+                        </div>
+
+                        {/* Example 2 */}
+                        <div className="bg-neutral-50/80 dark:bg-neutral-900/40 backdrop-blur-xl border border-neutral-200 dark:border-white/5 rounded-3xl p-6 flex flex-col gap-4 hover:border-teal-500/30 transition-colors">
+                            <h3 className="text-lg font-bold text-neutral-900 dark:text-white">2. Lunar Date Conversion</h3>
+                            <p className="text-sm text-neutral-600 dark:text-neutral-400">Instantly convert Gregorian dates into the traditional Khmer Lunar calendar system.</p>
+                            <CodeSnippet code={`import { FormatDateTime } from '@pphatdev/format-datetime';\n\nconst date = new Date();\nconst lunar = FormatDateTime.getLunarDate(date);\n// Result: "ថ្ងៃចន្ទ ទី១ ខែមករា ឆ្នាំរោង ឆស័ក ព.ស. ២៥៦៨"`}>
+                                <code className="text-[#ff7b72]">import</code> {'{ '}FormatDateTime{' }'} <code className="text-[#ff7b72]">from</code> <code className="text-[#a5d6ff]">'@pphatdev/format-datetime'</code>;<br /><br />
+                                <code className="text-[#ff7b72]">const</code> date = <code className="text-[#ff7b72]">new</code> <code className="text-[#d2a8ff]">Date</code>();<br />
+                                <code className="text-[#ff7b72]">const</code> lunar = <code className="text-[#79c0ff]">FormatDateTime</code>.<code className="text-[#d2a8ff]">getLunarDate</code>(date);<br />
+                                <code className="text-[#8b949e]">// Result: &quot;<span className="font-[family-name:var(--font-kantumruy)]">ថ្ងៃចន្ទ ទី១ ខែមករា ឆ្នាំរោង ឆស័ក ព.ស. ២៥៦៨</span>&quot;</code>
+                            </CodeSnippet>
+                        </div>
+
+                        {/* Example 3 */}
+                        <div className="lg:col-span-2 bg-neutral-50/80 dark:bg-neutral-900/40 backdrop-blur-xl border border-neutral-200 dark:border-white/5 rounded-3xl p-6 flex flex-col md:flex-row gap-6 hover:border-teal-500/30 transition-colors">
+                            <div className="flex flex-col gap-4 md:w-1/3">
+                                <h3 className="text-lg font-bold text-neutral-900 dark:text-white">3. Khmer New Year Calculation</h3>
+                                <p className="text-sm text-neutral-600 dark:text-neutral-400">Calculate the exact time and date of the Khmer New Year (Moha Sangkran) for any given year.</p>
+                            </div>
+                            <div className="md:w-2/3">
+                                <CodeSnippet code={`import { FormatDateTime } from '@pphatdev/format-datetime';\n\nconst kny = FormatDateTime.getKhmerNewYear(2024);\nconsole.log(kny);\n/* \nResult: {\n  date: "2024-04-13T15:17:00.000Z",\n  lunarDate: "ថ្ងៃសៅរ៍ ទី៥ ខែចេត្រ ឆ្នាំរោង ឆស័ក ព.ស. ២៥៦៨",\n  angel: "មហោធរៈទេវី"\n}\n*/`}>
+                                    <code className="text-[#ff7b72]">import</code> {'{ '}FormatDateTime{' }'} <code className="text-[#ff7b72]">from</code> <code className="text-[#a5d6ff]">'@pphatdev/format-datetime'</code>;<br /><br />
+                                    <code className="text-[#ff7b72]">const</code> kny = <code className="text-[#79c0ff]">FormatDateTime</code>.<code className="text-[#d2a8ff]">getKhmerNewYear</code>(<code className="text-[#79c0ff]">2024</code>);<br />
+                                    <code className="text-[#79c0ff]">console</code>.<code className="text-[#d2a8ff]">log</code>(kny);<br />
+                                    <code className="text-[#8b949e]">/*
+                                        Result: {'{'}
+                                        date: "2024-04-13T15:17:00.000Z",
+                                        lunarDate: &quot;<span className="font-[family-name:var(--font-kantumruy)]">ថ្ងៃសៅរ៍ ទី៥ ខែចេត្រ ឆ្នាំរោង ឆស័ក ព.ស. ២៥៦៨</span>&quot;,
+                                        angel: &quot;<span className="font-[family-name:var(--font-kantumruy)]">មហោធរៈទេវី</span>&quot;
+                                        {'}'}
+                                        */</code>
+                                </CodeSnippet>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 {/* Playground Section */}
                 <section className="w-full">
                     <div className="flex items-center gap-3 mb-8">
@@ -237,7 +333,7 @@ export default function Home() {
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                         {/* Controls */}
                         <div className="lg:col-span-5 bg-neutral-50/80 dark:bg-neutral-900/40 backdrop-blur-xl border border-neutral-200 dark:border-white/5 rounded-3xl p-6 md:p-8 flex flex-col gap-6">
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
                                 <label className="text-sm font-medium text-neutral-500 dark:text-neutral-400">Select Date</label>
                                 <Popover>
                                     <PopoverTrigger
@@ -298,20 +394,77 @@ export default function Home() {
                                     value={formatStr}
                                     onChange={(e) => setFormatStr(e.target.value)}
                                 />
+                                <div className="flex flex-wrap items-center gap-2 pt-2">
+                                    <span className="text-xs font-medium text-neutral-400 dark:text-neutral-500">Try:</span>
+                                    {['DDD MMMM YYYY', 'DDD MM YYYY hh:mm A', 'DDDD d MMMM', 'hh:mm:ss A', 'ថ្ងៃlW ទីldlN ខែlM', 'ឆ្នាំlA ព.ស. BBBB'].map((fmt) => (
+                                        <button key={fmt} onClick={() => setFormatStr(fmt)} className="text-[11px] px-2 py-1 bg-black/5 dark:bg-white/5 hover:bg-teal-500/10 hover:text-teal-600 dark:hover:text-teal-400 text-neutral-600 dark:text-neutral-400 border border-transparent hover:border-teal-500/20 rounded-md transition-colors font-mono" >
+                                            {fmt}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <div className="pt-4 mt-2 border-t border-neutral-200 dark:border-white/5 space-y-4">
+                                    <div>
+                                        <p className="text-[11px] font-medium text-neutral-400 dark:text-neutral-500 mb-2 uppercase tracking-wider">Standard Tokens</p>
+                                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-y-2 gap-x-2 text-[10px] sm:text-[11px] text-neutral-500 dark:text-neutral-400 font-mono">
+                                            <div><span className="text-teal-600 dark:text-teal-400 font-bold">YYYY</span> Year</div>
+                                            <div><span className="text-teal-600 dark:text-teal-400 font-bold">MMMM</span> Month</div>
+                                            <div><span className="text-teal-600 dark:text-teal-400 font-bold">DDDD</span> Day</div>
+                                            <div><span className="text-teal-600 dark:text-teal-400 font-bold">dd</span> Date</div>
+                                            <div><span className="text-teal-600 dark:text-teal-400 font-bold">hh</span> 12 Hour</div>
+                                            <div><span className="text-teal-600 dark:text-teal-400 font-bold">HH</span> 24 Hour</div>
+                                            <div><span className="text-teal-600 dark:text-teal-400 font-bold">mm</span> Minute</div>
+                                            <div><span className="text-teal-600 dark:text-teal-400 font-bold">ss</span> Second</div>
+                                            <div><span className="text-teal-600 dark:text-teal-400 font-bold">A</span> AM/PM</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p className="text-[11px] font-medium text-neutral-400 dark:text-neutral-500 mb-2 uppercase tracking-wider">Lunar Tokens</p>
+                                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-y-2 gap-x-2 text-[10px] sm:text-[11px] text-neutral-500 dark:text-neutral-400 font-mono">
+                                            <div><span className="text-purple-500 dark:text-purple-400 font-bold">BBBB</span> BE Year</div>
+                                            <div><span className="text-purple-500 dark:text-purple-400 font-bold">JJJJ</span> JS Year</div>
+                                            <div><span className="text-purple-500 dark:text-purple-400 font-bold">lA</span> Animal</div>
+                                            <div><span className="text-purple-500 dark:text-purple-400 font-bold">lE</span> Sak</div>
+                                            <div><span className="text-purple-500 dark:text-purple-400 font-bold">lM</span> Month</div>
+                                            <div><span className="text-purple-500 dark:text-purple-400 font-bold">ld</span> Day Num</div>
+                                            <div><span className="text-purple-500 dark:text-purple-400 font-bold">lN</span> Phase</div>
+                                            <div><span className="text-purple-500 dark:text-purple-400 font-bold">lW</span> Weekday</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         {/* Result output */}
-                        <div className="lg:col-span-7 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-2xl border border-neutral-200 dark:border-white/5 rounded-3xl p-8 relative overflow-hidden flex flex-col justify-center min-h-[250px]">
-                            <div className="absolute inset-0 bg-linear-to-br from-sky-500/5 via-teal-500/5 to-green-500/5" />
+                        <div className="lg:col-span-7 relative group flex">
+                            {/* Animated background glow */}
+                            <div className="absolute -inset-0.5 bg-linear-to-r from-teal-500 via-sky-500 to-green-500 rounded-[2rem] blur-xl opacity-10 group-hover:opacity-20 transition duration-1000 group-hover:duration-200" />
 
-                            <div className="relative z-10 flex flex-col items-start gap-4">
-                                <span className="px-3 py-1 bg-black/5 dark:bg-white/10 rounded-full text-xs font-semibold uppercase tracking-widest text-neutral-600 dark:text-neutral-300">
-                                    Formatted Output
-                                </span>
+                            <div className="bg-white/90 dark:bg-[#0a0a0a]/90 backdrop-blur-3xl border border-neutral-200 dark:border-white/10 rounded-[2rem] p-8 md:p-12 relative overflow-hidden flex flex-col justify-center min-h-[300px] w-full">
+                                {/* Ambient light orbs */}
+                                <div className="absolute -top-32 -right-32 w-64 h-64 bg-teal-500/10 blur-[100px] rounded-full" />
+                                <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-sky-500/10 blur-[100px] rounded-full" />
 
-                                <div className={`text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight text-wrap w-full leading-tight ${hasError ? 'text-red-500 dark:text-red-400' : 'text-neutral-900 dark:text-white drop-shadow-sm dark:drop-shadow-md'}`}>
-                                    {formattedResult}
+                                {/* Grid Pattern */}
+                                <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_100%)]"></div>
+
+                                <div className="relative z-10 flex flex-col items-start gap-8 w-full">
+                                    <div className="flex items-center gap-3">
+                                        <div className="relative flex h-2.5 w-2.5">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-teal-500 shadow-[0_0_10px_rgba(20,184,166,0.8)]"></span>
+                                        </div>
+                                        <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-500 dark:text-neutral-400">
+                                            Live Output
+                                        </span>
+                                    </div>
+
+                                    <div className={`text-4xl md:text-5xl lg:text-[4rem] font-bold tracking-tight text-wrap w-full leading-[1.2] pb-2 ${hasError
+                                        ? 'text-red-500 dark:text-red-400'
+                                        : 'bg-linear-to-br from-neutral-800 to-neutral-400 dark:from-white dark:to-neutral-500 bg-clip-text text-transparent'
+                                        }`}>
+                                        {formattedResult}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -320,31 +473,40 @@ export default function Home() {
 
             </main>
 
-            {/* Author Profile */}
-            <div className="w-full pb-12 pt-8 flex flex-col items-center">
-                <p className="text-sm text-neutral-500 dark:text-neutral-400 font-medium mb-3">
+            {/* Footer Area */}
+            <div className="relative w-full pb-16 pt-16 flex flex-col items-center overflow-hidden mt-12">
+                {/* Clean Top Border Effect */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4/5 max-w-2xl h-[1px] bg-linear-to-r from-transparent via-neutral-300 dark:via-white/20 to-transparent" />
+
+                {/* Ambient bottom glow effect */}
+                <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-teal-500/10 dark:bg-teal-500/20 blur-[100px] rounded-[100%] pointer-events-none" />
+
+                <p className="relative z-10 text-sm text-neutral-500 dark:text-neutral-400 font-medium mb-3">
                     Created by
                 </p>
-                <a
-                    href="https://pphat.me"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group flex items-center gap-3 p-1.5 pr-5 rounded-full bg-white/50 dark:bg-white/5 border border-neutral-200 dark:border-white/10 hover:border-neutral-300 dark:hover:border-white/20 hover:bg-white dark:hover:bg-white/10 transition-all duration-300 backdrop-blur-md"
-                >
-                    <img
-                        src="https://github.com/pphatdev.png"
-                        alt="PPhat"
-                        className="w-9 h-9 rounded-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
-                    />
-                    <div className="flex flex-col text-left">
-                        <span className="text-sm font-bold text-neutral-900 dark:text-white leading-none flex items-center gap-1.5">
-                            PPhat
-                        </span>
-                        <span className="text-[11px] text-neutral-500 dark:text-neutral-400">
-                            Senior Front End Developer
-                        </span>
-                    </div>
-                </a>
+                <div className="relative z-10 group">
+
+                    <a
+                        href="https://pphat.me"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="relative flex items-center gap-3 p-1.5 pr-5 rounded-full bg-white/50 dark:bg-white/5 border border-neutral-200 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 transition-all duration-300 backdrop-blur-xl"
+                    >
+                        <img
+                            src="https://github.com/pphatdev.png"
+                            alt="PPhat"
+                            className="w-10 h-10 rounded-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
+                        />
+                        <div className="flex flex-col text-left">
+                            <span className="text-sm font-bold text-neutral-900 dark:text-white leading-none flex items-center gap-1.5">
+                                PPhat
+                            </span>
+                            <span className="text-[11px] text-neutral-500 dark:text-neutral-400">
+                                Senior Front End Developer
+                            </span>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
     );
