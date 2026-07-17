@@ -77,13 +77,21 @@ export function generateTokens(date: Date, format: string, locale: string): Reco
     const tzHours = String(Math.floor(absTz / 60)).padStart(2, '0');
     const tzMinutes = String(absTz % 60).padStart(2, '0');
 
-    const monthLong = new Intl.DateTimeFormat(locale, { month: 'long' }).format(date);
-    const monthShort = new Intl.DateTimeFormat(locale, { month: 'short' }).format(date);
-
-    const dayLong = new Intl.DateTimeFormat(locale, { weekday: 'long' }).format(date);
-    const dayShort = new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(date);
-
     const isKm = locale.toLowerCase().startsWith('km');
+
+    let monthLong = new Intl.DateTimeFormat(locale, { month: 'long' }).format(date);
+    let monthShort = new Intl.DateTimeFormat(locale, { month: 'short' }).format(date);
+
+    let dayLong = new Intl.DateTimeFormat(locale, { weekday: 'long' }).format(date);
+    let dayShort = new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(date);
+
+    if (isKm) {
+        monthLong = Constants.MONTHS[m];
+        monthShort = Constants.MONTHS[m];
+        dayLong = Constants.WEEKDAYS[date.getDay()];
+        dayShort = Constants.WEEKDAYS_SHORT[date.getDay()];
+    }
+
     const formatNum = (num: number, digits: number = 1): string => {
         const options: Intl.NumberFormatOptions = {
             minimumIntegerDigits: digits,
@@ -92,7 +100,11 @@ export function generateTokens(date: Date, format: string, locale: string): Reco
         if (isKm) {
             (options as Intl.NumberFormatOptions & { numberingSystem?: string }).numberingSystem = 'khmr';
         }
-        return new Intl.NumberFormat(locale, options).format(num);
+        let formatted = new Intl.NumberFormat(locale, options).format(num);
+        if (isKm) {
+            formatted = formatted.split('').map(char => Constants.KHMER_NUMBERS[char] || char).join('');
+        }
+        return formatted;
     };
 
     let localAmPm = ampm;

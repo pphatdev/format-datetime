@@ -1,6 +1,6 @@
 {
   "name": "@pphatdev/format-datetime",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "exports": "./src/index.ts",
   "license": "MIT"
 }
